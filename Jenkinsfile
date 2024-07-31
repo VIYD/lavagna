@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        ANSIBLE_PLAYBOOK_PATH = "deploy.yml"
-        ANSIBLE_INVENTORY = "servers_inventory.ini"
+        ANSIBLE_PLAYBOOK_PATH = "../deploy.yml"
+        ANSIBLE_INVENTORY = "../servers_inventory.ini"
     }
 
     stages {
