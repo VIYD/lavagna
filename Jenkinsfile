@@ -2,17 +2,14 @@ pipeline {
     agent any
 
     environment {
-        TOMCAT_HOST = '192.168.56.57' 
-        TOMCAT_USER = 'tomcat'       
-        TOMCAT_PATH = '/opt/tomcat/webapps' 
-        WAR_FILE_NAME = 'lavagna.war'
+        ANSIBLE_PLAYBOOK_PATH = "deploy.yml"
+        ANSIBLE_INVENTORY = "servers_inventory.ini"
     }
 
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
-                sh 'chmod +x build-with-java-8.sh'
             }
         }
 
@@ -27,9 +24,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    sh """
-                    scp -o StrictHostKeyChecking=no target/${WAR_FILE_NAME} ${TOMCAT_USER}@${TOMCAT_HOST}:${TOMCAT_PATH}/
-                    """
+                    sh 'cp target/lavagna.war /tmp/lavagna.war'
+                    
+                    sh "ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOK_PATH}"
                 }
             }
         }
