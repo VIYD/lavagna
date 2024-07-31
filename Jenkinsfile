@@ -27,7 +27,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    scp -o StrictHostKeyChecking=no target/${WAR_FILE_NAME} ${TOMCAT_USER}@${TOMCAT_HOST}:${TOMCAT_PATH}/
+                    scp -o StrictHostKeyChecking=no target/${WAR_FILE_NAME} ${TOMCAT_USER}@${TOMCAT_HOST}:${TOMCAT_PATH}/ROOT.war
                     """
                 }
             }
