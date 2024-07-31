@@ -3,8 +3,7 @@ pipeline {
 
     environment {
         TOMCAT_HOST = '192.168.56.57' 
-        TOMCAT_USER = 'tomcatadmin' 
-        TOMCAT_PASSWORD = '1111'
+        TOMCAT_USER = 'vagrant' 
         TOMCAT_PATH = '/opt/tomcat/webapps' 
         WAR_FILE_NAME = 'lavagna.war'
     }
@@ -28,9 +27,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    curl -u ${TOMCAT_USER}:${TOMCAT_PASSWORD} \
-                    -T target/${WAR_FILE_NAME} \
-                    http://${TOMCAT_HOST}:8080/manager/text/deploy?path=/ROOT&update=true
+                    scp -o StrictHostKeyChecking=no target/${WAR_FILE_NAME} ${TOMCAT_USER}@${TOMCAT_HOST}:${TOMCAT_PATH}/ROOT.war
                     """
                 }
             }
