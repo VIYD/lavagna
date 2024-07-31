@@ -12,6 +12,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                sh 'chmod +x build-with-java8.sh'
             }
         }
 
