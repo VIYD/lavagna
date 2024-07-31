@@ -12,13 +12,14 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                sh 'chmod +x build-with-java-8.sh'
             }
         }
 
         stage('Build') {
             steps {
                 script {
-                    sh './build-with-java8.sh'
+                    sh './build-with-java-8.sh'
                 }
             }
         }
