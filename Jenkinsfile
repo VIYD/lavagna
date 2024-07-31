@@ -18,7 +18,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh './build-with-java8.sh'
+                    sh './build-with-java-8.sh'
                 }
             }
         }
