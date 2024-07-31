@@ -394,8 +394,8 @@
                 <configuration>
                     <compilerId>javac-with-errorprone</compilerId>
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
                 <executions>
                     <!-- Replacing default-compile as it is treated specially by maven -->
