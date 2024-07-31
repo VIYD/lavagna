@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         TOMCAT_HOST = '192.168.56.57' 
-        TOMCAT_USER = 'vagrant'       
+        TOMCAT_USER = 'tomcat'       
         TOMCAT_PATH = '/opt/tomcat/webapps' 
         WAR_FILE_NAME = 'lavagna.war'
     }
@@ -18,7 +18,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh 'mvn clean package'
+                    sh './build-with-java8.sh'
                 }
             }
         }
@@ -26,9 +26,11 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    sh """
-                    scp -o StrictHostKeyChecking=no target/${WAR_FILE_NAME} ${TOMCAT_USER}@${TOMCAT_HOST}:${TOMCAT_PATH}/
-                    """
+                    sshagent(['jenkins-ssh-key']) {
+                        sh """
+                        scp -o StrictHostKeyChecking=no target/${WAR_FILE_NAME} ${TOMCAT_USER}@${TOMCAT_HOST}:${TOMCAT_PATH}/
+                        """
+                    }
                 }
             }
         }
