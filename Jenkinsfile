@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent any 
 
     environment {
         ANSIBLE_PLAYBOOK_PATH = "../deploy.yml"
