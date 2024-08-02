@@ -10,15 +10,15 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-                sh 'chmod +x set-java-8-env.sh'
-                sh 'chmod +x set-java-11-env.sh'
+                // sh 'chmod +x set-java-8-env.sh'
+                // sh 'chmod +x set-java-11-env.sh'
             }
         }
 
         stage('Set Java 8') {
             steps {
                 script {
-                    sh './set-java-8-env.sh'
+                    sh 'update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java'
                 }
             }
         }
@@ -52,7 +52,7 @@ pipeline {
         stage('Set Java 11') {
             steps {
                 script {
-                    sh './set-java-11-env.sh'
+                    sh 'update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java'
                 }
             }
         }
