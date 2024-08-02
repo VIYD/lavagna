@@ -10,18 +10,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-                // sh 'chmod +x set-java-8-env.sh'
-                // sh 'chmod +x set-java-11-env.sh'
             }
         }
 
-        // stage('Set Java 8') {
-        //     steps {
-        //         script {
-        //             sh 'update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java'
-        //         }
-        //     }
-        // }
 
         stage('Test') {
             steps {
@@ -40,6 +31,9 @@ pipeline {
         }
 
         stage('Deploy') {
+            when {
+                branch 'master'
+            }
             steps {
                 script {
                     sh 'cp target/lavagna.war /tmp/lavagna.war'
@@ -48,14 +42,6 @@ pipeline {
                 }
             }
         }
-
-        // stage('Set Java 11') {
-        //     steps {
-        //         script {
-        //             sh 'update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java'
-        //         }
-        //     }
-        // }
     }
 
     post {
