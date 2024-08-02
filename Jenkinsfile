@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    environment {
+    environment { 
         ANSIBLE_PLAYBOOK_PATH = "../deploy.yml"
         ANSIBLE_INVENTORY = "../servers_inventory.ini"
     }
