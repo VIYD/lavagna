@@ -15,18 +15,18 @@ pipeline {
             }
         }
 
-        stage('Set Java 8') {
-            steps {
-                script {
-                    sh 'update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java'
-                }
-            }
-        }
+        // stage('Set Java 8') {
+        //     steps {
+        //         script {
+        //             sh 'update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java'
+        //         }
+        //     }
+        // }
 
         stage('Test') {
             steps {
                 script {
-                    sh 'mvn clean test'
+                    sh 'JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 mvn clean test'
                 }
             }
         }
@@ -34,7 +34,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh 'mvn clean package'
+                    sh 'JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 mvn clean package'
                 }
             }
         }
@@ -49,13 +49,13 @@ pipeline {
             }
         }
 
-        stage('Set Java 11') {
-            steps {
-                script {
-                    sh 'update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java'
-                }
-            }
-        }
+        // stage('Set Java 11') {
+        //     steps {
+        //         script {
+        //             sh 'update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java'
+        //         }
+        //     }
+        // }
     }
 
     post {
