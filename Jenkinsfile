@@ -32,7 +32,10 @@ pipeline {
 
         stage('Deploy') {
             when {
-                branch 'master'
+                allOf {
+                    tag "release-*"
+                    branch "main"
+                }
             }
             steps {
                 script {
