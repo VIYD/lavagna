@@ -34,8 +34,8 @@ pipeline {
         stage('Put [SNAPSHOT] artifact') {
             when {
                 allOf {
-                    branch "main"
                     tag "snapshot-*"
+                    branch "main"
                 }
             }
             steps {
