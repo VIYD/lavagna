@@ -40,8 +40,8 @@ pipeline {
             }
             steps {
                 script {
-                    echo "Copying artifact to /mnt/snapshots/lavagna-${pom.version}.war"
-                    sh 'cp target/lavagna.war /mnt/snapshots/lavagna-${pom.version}.war'
+                    echo "Copying artifact to /mnt/snapshots/lavagna-${project.version}.war"
+                    sh 'cp target/lavagna.war /mnt/snapshots/lavagna-${project.version}.war'
                 }
             }
         }
@@ -55,9 +55,9 @@ pipeline {
             }
             steps {
                 script {
-                    def version = pom.version
-                    echo "Copying artifact to /mnt/releases/lavagna-${version}.war"
-                    sh 'cp target/lavagna.war /mnt/releases/lavagna-${version}.war'
+                    // def version = project.version
+                    echo "Copying artifact to /mnt/releases/lavagna-${project.version}.war"
+                    sh 'cp target/lavagna.war /mnt/releases/lavagna-${project.version}.war'
                 }
             }
         }
@@ -71,12 +71,12 @@ pipeline {
             }
             steps {
                 script {
-                    def version = pom.version
-                    echo "Deploying version ${version}"
+                    //def version = pom.version
+                    echo "Deploying version ${project.version}"
 
                     // sh 'cp target/lavagna.war /mnt/releases/lavagna-${version}.war'
                     
-                    sh "ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOK_PATH} --extra-vars 'version=${version}'"
+                    sh "ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOK_PATH} --extra-vars 'version=${project.version}'"
                 }
             }
         }
