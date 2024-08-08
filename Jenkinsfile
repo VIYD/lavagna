@@ -4,6 +4,7 @@ pipeline {
     environment { 
         ANSIBLE_PLAYBOOK_PATH = "../deploy.yml"
         ANSIBLE_INVENTORY = "../servers_inventory.ini"
+        pom = readMavenPom file: 'pom.xml'
     }
 
     stages {
@@ -30,7 +31,22 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Put [SNAPSHOT] artifact') {
+            when {
+                allOf {
+                    branch "main"
+                    tag "snapshot-*"
+                }
+            }
+            steps {
+                script {
+                    echo "Copying artifact to /mnt/snapshots/lavagna-${pom.version}.war"
+                    sh 'cp target/lavagna.war /mnt/snapshots/lavagna-${pom.version}.war'
+                }
+            }
+        }
+
+        stage('Put [RELEASE] artifact') {
             when {
                 allOf {
                     tag "release-*"
@@ -39,9 +55,28 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'cp target/lavagna.war /tmp/lavagna.war'
+                    def version = pom.version
+                    echo "Copying artifact to /mnt/releases/lavagna-${version}.war"
+                    sh 'cp target/lavagna.war /mnt/releases/lavagna-${version}.war'
+                }
+            }
+        }
+
+        stage('Deploy if release') {
+            when {
+                allOf {
+                    tag "release-*"
+                    branch "main"
+                }
+            }
+            steps {
+                script {
+                    def version = pom.version
+                    echo "Deploying version ${version}"
+
+                    // sh 'cp target/lavagna.war /mnt/releases/lavagna-${version}.war'
                     
-                    sh "ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOK_PATH}"
+                    sh "ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOK_PATH} --extra-vars 'version=${version}'"
                 }
             }
         }
