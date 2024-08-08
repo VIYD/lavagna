@@ -61,7 +61,7 @@ pipeline {
             }
         }
 
-        stage('Deploy if release') {
+        stage('Deploy [RELEASE] artifact') {
             when {
                 allOf {
                     tag "release-*"
