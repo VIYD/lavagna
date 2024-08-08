@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment { 
-        ANSIBLE_PLAYBOOK_PATH = "etc/ansible/deploy.yml"
+        ANSIBLE_PLAYBOOK_PATH = "../deploy.yml"
     }
 
     stages {
@@ -29,10 +29,26 @@ pipeline {
             }
         }
 
+        stage('Put [SNAPSHOT] artifact') {
+            when {
+                allOf {
+                    branch "main"
+                    tag "snapshot-*"
+                }
+            }
+            steps {
+                script {
+                    def pom = readMavenPom file: 'pom.xml'
+                    echo "Copying artifact to /mnt/snapshots/lavagna-${pom.version}.war"
+                    sh "cp target/lavagna-${pom.version}.war /mnt/snapshots/lavagna-${pom.version}.war"
+                }
+            }
+        }
+
         stage('Put [RELEASE] artifact') {
             when {
                 allOf {
-                    // tag "release-*"
+                    tag "release-*"
                     branch "main"
                 }
             }
@@ -48,7 +64,7 @@ pipeline {
         stage('Deploy if release') {
             when {
                 allOf {
-                    // tag "release-*"
+                    tag "release-*"
                     branch "main"
                 }
             }
