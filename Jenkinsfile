@@ -15,15 +15,15 @@ pipeline {
         }
 
 
-        stage('Test') {
-            steps {
-                script {
-                    sh 'JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 mvn clean test'
-                }
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         script {
+        //             sh 'JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 mvn clean test'
+        //         }
+        //     }
+        // }
 
-        stage('Build') {
+        stage('Build and Test') {
             steps {
                 script {
                     sh 'JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 mvn clean package'
@@ -49,7 +49,7 @@ pipeline {
         stage('Put [RELEASE] artifact') {
             when {
                 allOf {
-                    tag "release-*"
+                    // tag "release-*"
                     branch "main"
                 }
             }
@@ -65,7 +65,7 @@ pipeline {
         stage('Deploy if release') {
             when {
                 allOf {
-                    tag "release-*"
+                    // tag "release-*"
                     branch "main"
                 }
             }
