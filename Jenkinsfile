@@ -23,7 +23,7 @@ pipeline {
         stage('Prepare Artifact') {
             steps {
                 script {
-                    def pom = readMavenPom file: 'pom.xml'  // Move this inside the script block
+                    def pom = readMavenPom file: 'pom.xml'
                     sh "mv target/lavagna.war target/lavagna-${pom.version}.war"
                 }
             }
@@ -31,9 +31,8 @@ pipeline {
 
         stage('Put [SNAPSHOT] artifact') {
             when {
-                allOf {
-                    branch "main"
-                    tag "snapshot-*"
+                expression {
+                    return (env.GIT_BRANCH == "main" && env.GIT_TAG_NAME?.startsWith("snapshot-"))
                 }
             }
             steps {
@@ -47,9 +46,8 @@ pipeline {
 
         stage('Put [RELEASE] artifact') {
             when {
-                allOf {
-                    tag "release-*"
-                    branch "main"
+                expression {
+                    return (env.GIT_BRANCH == "main" && env.GIT_TAG_NAME?.startsWith("release-"))
                 }
             }
             steps {
@@ -63,9 +61,8 @@ pipeline {
 
         stage('Deploy [RELEASE] artifact') {
             when {
-                allOf {
-                    tag "release-*"
-                    branch "main"
+                expression {
+                    return (env.GIT_BRANCH == "main" && env.GIT_TAG_NAME?.startsWith("release-"))
                 }
             }
             steps {
