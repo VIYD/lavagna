@@ -66,7 +66,7 @@ pipeline {
                 script {
                     // def version = pom.version
                     echo "Copying artifact to /mnt/releases/lavagna-${pom.version}.war"
-                    sh 'cp target/lavagna-${pom.version}.war /mnt/releases/lavagna-${pom.version}.war'
+                    sh "cp target/lavagna-${pom.version}.war /mnt/releases/lavagna-${pom.version}.war"
                 }
             }
         }
