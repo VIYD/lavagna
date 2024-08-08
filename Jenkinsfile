@@ -1,4 +1,3 @@
-def pom = readMavenPom file: 'pom.xml'
 pipeline {
     agent any
 
@@ -14,15 +13,6 @@ pipeline {
             }
         }
 
-
-        // stage('Test') {
-        //     steps {
-        //         script {
-        //             sh 'JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 mvn clean test'
-        //         }
-        //     }
-        // }
-
         stage('Build and Test') {
             steps {
                 script {
@@ -34,26 +24,11 @@ pipeline {
         stage('Prepare Artifact') {
             steps {
                 script {
-                    // Rename lavagna.war to lavagna-${pom.version}.war
+                    def pom = readMavenPom file: 'pom.xml'  // Move this inside the script block
                     sh "mv target/lavagna.war target/lavagna-${pom.version}.war"
                 }
             }
         }
-
-        // stage('Put [SNAPSHOT] artifact') {
-        //     when {
-        //         allOf {
-        //             tag "snapshot-*"
-        //             branch "main"
-        //         }
-        //     }
-        //     steps {
-        //         script {
-        //             echo "Copying artifact to /mnt/snapshots/lavagna-${pom.version}.war"
-        //             sh 'cp target/lavagna-${pom.version}.war /mnt/snapshots/lavagna-${pom.version}.war'
-        //         }
-        //     }
-        // }
 
         stage('Put [RELEASE] artifact') {
             when {
@@ -64,7 +39,7 @@ pipeline {
             }
             steps {
                 script {
-                    // def version = pom.version
+                    def pom = readMavenPom file: 'pom.xml'
                     echo "Copying artifact to /mnt/releases/lavagna-${pom.version}.war"
                     sh "cp target/lavagna-${pom.version}.war /mnt/releases/lavagna-${pom.version}.war"
                 }
@@ -80,11 +55,8 @@ pipeline {
             }
             steps {
                 script {
-                    // def version = pom.version
+                    def pom = readMavenPom file: 'pom.xml'
                     echo "Deploying version ${pom.version}"
-
-                    // sh 'cp target/lavagna.war /mnt/releases/lavagna-${version}.war'
-                    
                     sh "ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOK_PATH} --extra-vars 'version=${pom.version}'"
                 }
             }
