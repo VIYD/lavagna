@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment { 
-        ANSIBLE_PLAYBOOK_PATH = "../deploy.yml"
-        ANSIBLE_INVENTORY = "../servers_inventory.ini"
+        ANSIBLE_PLAYBOOK_PATH = "etc/ansible/deploy.yml"
     }
 
     stages {
@@ -57,7 +56,7 @@ pipeline {
                 script {
                     def pom = readMavenPom file: 'pom.xml'
                     echo "Deploying version ${pom.version}"
-                    sh "ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOK_PATH} --extra-vars 'version=${pom.version}'"
+                    sh "ansible-playbook ${ANSIBLE_PLAYBOOK_PATH} --extra-vars 'version=${pom.version}'"
                 }
             }
         }
