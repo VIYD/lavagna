@@ -1,3 +1,4 @@
+def pom = readMavenPom file: 'pom.xml'
 pipeline {
     agent any
 
@@ -30,20 +31,29 @@ pipeline {
             }
         }
 
-        stage('Put [SNAPSHOT] artifact') {
-            when {
-                allOf {
-                    tag "snapshot-*"
-                    branch "main"
-                }
-            }
+        stage('Prepare Artifact') {
             steps {
                 script {
-                    echo "Copying artifact to /mnt/snapshots/lavagna-${pom.version}.war"
-                    sh 'cp target/lavagna-${pom.version}.war /mnt/snapshots/lavagna-${pom.version}.war'
+                    // Rename lavagna.war to lavagna-${pom.version}.war
+                    sh "mv target/lavagna.war target/lavagna-${pom.version}.war"
                 }
             }
         }
+
+        // stage('Put [SNAPSHOT] artifact') {
+        //     when {
+        //         allOf {
+        //             tag "snapshot-*"
+        //             branch "main"
+        //         }
+        //     }
+        //     steps {
+        //         script {
+        //             echo "Copying artifact to /mnt/snapshots/lavagna-${pom.version}.war"
+        //             sh 'cp target/lavagna-${pom.version}.war /mnt/snapshots/lavagna-${pom.version}.war'
+        //         }
+        //     }
+        // }
 
         stage('Put [RELEASE] artifact') {
             when {
@@ -55,7 +65,6 @@ pipeline {
             steps {
                 script {
                     // def version = pom.version
-                    def pom = readMavenPom file: 'pom.xml'
                     echo "Copying artifact to /mnt/releases/lavagna-${pom.version}.war"
                     sh 'cp target/lavagna-${pom.version}.war /mnt/releases/lavagna-${pom.version}.war'
                 }
