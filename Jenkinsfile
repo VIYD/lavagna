@@ -9,6 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                echo "Branch: $env.GIT_BRANCH"
             }
         }
 
@@ -32,7 +33,7 @@ pipeline {
         stage('Put [SNAPSHOT] artifact') {
             when {
                 expression {
-                    return (env.GIT_BRANCH == "main" && env.GIT_TAG_NAME?.startsWith("snapshot-"))
+                    return env.GIT_BRANCH && env.GIT_BRANCH.startsWith("snapshot-")
                 }
             }
             steps {
@@ -47,7 +48,7 @@ pipeline {
         stage('Put [RELEASE] artifact') {
             when {
                 expression {
-                    return (env.GIT_BRANCH == "main" && env.GIT_TAG_NAME?.startsWith("release-"))
+                    return env.GIT_BRANCH && env.GIT_BRANCH.startsWith("release-")
                 }
             }
             steps {
@@ -62,7 +63,7 @@ pipeline {
         stage('Deploy [RELEASE] artifact') {
             when {
                 expression {
-                    return (env.GIT_BRANCH == "main" && env.GIT_TAG_NAME?.startsWith("release-"))
+                    return env.GIT_BRANCH && env.GIT_BRANCH.startsWith("release-")
                 }
             }
             steps {
