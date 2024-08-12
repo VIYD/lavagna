@@ -13,18 +13,18 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                script {
-                    sh 'JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 mvn clean test'
-                }
-            }
-        }
-
         stage('Build') {
             steps {
                 script {
                     sh 'JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 mvn clean package'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    sh 'JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 mvn test'
                 }
             }
         }
@@ -73,20 +73,20 @@ pipeline {
             }
         }
 
-        stage('Deploy [RELEASE] artifact') {
-            when {
-                expression {
-                    return env.GIT_BRANCH && env.GIT_BRANCH.startsWith("release-")
-                }
-            }
-            steps {
-                script {
-                    def pom = readMavenPom file: 'pom.xml'
-                    echo "Deploying version ${pom.version}"
-                    sh "ansible-playbook ${ANSIBLE_PLAYBOOK_PATH} --extra-vars 'version=${pom.version}'"
-                }
-            }
-        }
+        // stage('Deploy [RELEASE] artifact') {
+        //     when {
+        //         expression {
+        //             return env.GIT_BRANCH && env.GIT_BRANCH.startsWith("release-")
+        //         }
+        //     }
+        //     steps {
+        //         script {
+        //             def pom = readMavenPom file: 'pom.xml'
+        //             echo "Deploying version ${pom.version}"
+        //             sh "ansible-playbook ${ANSIBLE_PLAYBOOK_PATH} --extra-vars 'version=${pom.version}'"
+        //         }
+        //     }
+        // }
     }
 
     post {
