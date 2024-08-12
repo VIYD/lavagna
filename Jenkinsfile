@@ -13,7 +13,15 @@ pipeline {
             }
         }
 
-        stage('Build and Test') {
+        stage('Test') {
+            steps {
+                script {
+                    sh 'JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 mvn clean test'
+                }
+            }
+        }
+
+        stage('Build') {
             steps {
                 script {
                     sh 'JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 mvn clean package'
@@ -22,6 +30,11 @@ pipeline {
         }
 
         stage('Prepare Artifact') {
+            when {
+                expression {
+                    return env.GIT_BRANCH && (env.GIT_BRANCH.startsWith("snapshot-") || env.GIT_BRANCH.startsWith("release-"))
+                }
+            }
             steps {
                 script {
                     def pom = readMavenPom file: 'pom.xml'
